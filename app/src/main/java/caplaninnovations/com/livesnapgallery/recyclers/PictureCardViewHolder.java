@@ -1,5 +1,6 @@
 package caplaninnovations.com.livesnapgallery.recyclers;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,8 +40,11 @@ class PictureCardViewHolder extends RecyclerView.ViewHolder {
 
     void bind(Snap snap) {
         Log.d(PictureCardViewHolder.class.getSimpleName(), "bind: " + snap.getUrl());
-        Glide.with(itemView.getContext())
+
+        Context context = itemView.getContext();
+        Glide.with(context)
                 .load(snap.getUrl())
+                .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher_round, null))
                 .fitCenter()
                 .error(R.drawable.ic_cloud_off_black_48dp)
                 .crossFade()

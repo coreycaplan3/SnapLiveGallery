@@ -1,5 +1,9 @@
 package caplaninnovations.com.livesnapgallery.models;
 
+import android.os.Parcel;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -13,36 +17,63 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Snap extends RealmObject {
 
-    @PrimaryKey
-    private String mUrl;
-    private long mDateAdded;
+    public static final String COL_URL = "url";
 
-    public static Snap getDummy() {
-        String url = "https://images.pexels.com/photos/59523/pexels-photo-59523.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb";
-        return new Snap(url, new Date().getTime());
+    @PrimaryKey
+    private String url;
+    private long dateAdded;
+
+    @SuppressWarnings("WeakerAccess")
+    protected Snap(Parcel in) {
+        url = in.readString();
+        dateAdded = in.readLong();
+    }
+
+    public static ArrayList<Snap> getDummyList() {
+        String url;
+        ArrayList<Snap> snaps = new ArrayList<>();
+        long time = Calendar.getInstance().getTimeInMillis();
+
+        url = "https://images.pexels.com/photos/59523/pexels-photo-59523.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb";
+        snaps.add(new Snap(url, time));
+
+        url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnfpzoD-_HTIGH37ncMqaYiqjOI4MrXSPSTCyAHbJdSsc6O9vP";
+        snaps.add(new Snap(url, time));
+
+        url = "https://images.pexels.com/photos/39317/chihuahua-dog-puppy-cute-39317.jpeg?w=940&h=650&auto=compress&cs=tinysrgb";
+        snaps.add(new Snap(url, time));
+
+        url = "https://images.pexels.com/photos/97863/pexels-photo-97863.jpeg?w=940&h=650&auto=compress&cs=tinysrgb";
+        snaps.add(new Snap(url, time));
+
+        url = "https://images.pexels.com/photos/71581/animal-pet-dog-puppy-71581.jpeg?w=940&h=650&auto=compress&cs=tinysrgb";
+        snaps.add(new Snap(url, time));
+
+        return snaps;
     }
 
     public Snap() {
     }
 
     private Snap(String url, long dateAdded) {
-        mUrl = url;
-        mDateAdded = dateAdded;
+        this.url = url;
+        this.dateAdded = dateAdded;
     }
 
     public String getUrl() {
-        return mUrl;
+        return url;
     }
 
     public void setUrl(String mUrl) {
-        this.mUrl = mUrl;
+        this.url = mUrl;
     }
 
     public long getDateAdded() {
-        return mDateAdded;
+        return dateAdded;
     }
 
     public void setDateAdded(long mDateAdded) {
-        this.mDateAdded = mDateAdded;
+        this.dateAdded = mDateAdded;
     }
+
 }

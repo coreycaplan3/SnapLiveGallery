@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import caplaninnovations.com.livesnapgallery.R;
 import caplaninnovations.com.livesnapgallery.models.Snap;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by Corey on 4/30/2017.
@@ -20,9 +21,9 @@ import io.realm.RealmList;
 public class PictureRecyclerAdapter extends RecyclerView.Adapter<PictureCardViewHolder> {
 
     @NonNull
-    private final RealmList<Snap> mSnapRealmList;
+    private final RealmResults<Snap> mSnapRealmList;
 
-    public PictureRecyclerAdapter(@NonNull RealmList<Snap> snapRealmList) {
+    public PictureRecyclerAdapter(@NonNull RealmResults<Snap> snapRealmList) {
         mSnapRealmList = snapRealmList;
     }
 
