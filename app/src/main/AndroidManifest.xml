@@ -22,8 +22,12 @@
         </activity>
 
         <activity
+            android:name=".activities.PhotoDetailsActivity"
+            android:theme="@style/AppTheme.DarkStatusBar" />
+
+        <activity
             android:name=".activities.SlideShowActivity"
-            android:theme="@style/AppTheme.SlideShowActivity" />
+            android:theme="@style/AppTheme.DarkStatusBar" />
 
     </application>
 

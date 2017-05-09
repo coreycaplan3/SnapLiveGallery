@@ -14,9 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplaninnovations.com.livesnapgallery.R;
+import caplaninnovations.com.livesnapgallery.models.Snap;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -38,6 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             "properly!";
 
     private static Context sApplicationContext;
+    private static RequestQueue sRequestQueue;
 
     private ProgressDialog progressDialog;
     private String mProgressMessage;
@@ -54,9 +59,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        boolean isFirstInstance = false;
         if (sApplicationContext == null) {
             sApplicationContext = getApplicationContext();
             Realm.init(sApplicationContext);
+
+            sRequestQueue = Volley.newRequestQueue(getApplicationContext());
+            isFirstInstance = true;
         }
 
         int layoutResourceId = getContentView();
@@ -70,6 +79,15 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         mRealm = Realm.getInstance(configuration);
+
+        if(isFirstInstance) {
+            mRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    mRealm.delete(Snap.class);
+                }
+            });
+        }
 
         setupProgressDialogInternal(savedInstanceState);
 
@@ -144,7 +162,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * content view. This method is imperative for the sake of automating activity setup.
      */
     @LayoutRes
-    abstract int getContentView();
+    protected abstract int getContentView();
 
     /**
      * Sets up the back button to be shown in this activity
@@ -228,7 +246,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     @SuppressWarnings("unused")
     public final View getRootView() {
-        return ButterKnife.findById(this, R.id.activity_container);
+        View view = ButterKnife.findById(this, R.id.activity_container);
+        if (view == null) {
+            throw new NullPointerException("Activity container was null!");
+        }
+        return view;
     }
 
     @Override
@@ -272,6 +294,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         return sApplicationContext;
     }
+
+    /**
+     * @return The global request queue for the application. This can be accessed after the
+     * BaseActivity's first call to {@link #onCreate(Bundle)}.
+     * @throws NullPointerException When this method is called before the first call to
+     *                              {@link #onCreate(Bundle)}.
+     */
+    public static synchronized RequestQueue getRequestQueue() {
+        if (sRequestQueue == null) {
+            throw new NullPointerException("The application context has not been setup yet. " +
+                    "This is done after the BaseActivity's initial call to onCreate");
+        }
+        return sRequestQueue;
+    }
+
 
     /**
      * @return The realm instance used for this activity. This instance is safe to access after

@@ -14,4 +14,8 @@
     <string name="error_too_long">This field is too long</string>
     <string name="error_required">This field is required</string>
     <string name="error_no_connection">No connection</string>
+    <string name="transition_shared_image">shared_image</string>
+    <string name="toolbar_transition">toolbar_transition</string>
+    <string name="date_transition">date_transition</string>
+    <string name="refresh">Refresh</string>
 </resources>

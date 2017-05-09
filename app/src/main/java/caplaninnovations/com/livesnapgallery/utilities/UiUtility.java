@@ -62,8 +62,11 @@ final public class UiUtility {
         snackbar(root, R.string.error_no_connection, R.string.retry, clickListener);
     }
 
-    public static int dpToPx(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+    public static int dpToPx(float dp) {
+        final float scale = BaseActivity.getGlobalContext()
+                .getResources()
+                .getDisplayMetrics()
+                .density;
         return Math.round(dp * scale);
     }
 

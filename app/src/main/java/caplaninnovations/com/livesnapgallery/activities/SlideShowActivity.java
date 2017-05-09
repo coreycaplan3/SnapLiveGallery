@@ -31,7 +31,6 @@ import io.realm.RealmResults;
  */
 public class SlideShowActivity extends BaseActivity {
 
-    private static final long ANIMATION_DURATION = 300L;
     private static final long TASK_DELAY = 3000L;
     private static final long TASK_DURATION = SharedPreferenceUtility.getSlideShowTaskDuration();
     private static final String KEY_SNAPS = "SNAPS";
@@ -70,6 +69,8 @@ public class SlideShowActivity extends BaseActivity {
                     .findAll();
         }
 
+        disableScrollFlags();
+
         mSlideShowHandler = new Handler();
 
         mSlideShowAdapter = new SlideShowAdapter(getSupportFragmentManager(), mSnaps);
@@ -79,7 +80,7 @@ public class SlideShowActivity extends BaseActivity {
     }
 
     @Override
-    int getContentView() {
+    protected int getContentView() {
         return R.layout.activity_slide_show;
     }
 
@@ -92,16 +93,20 @@ public class SlideShowActivity extends BaseActivity {
 
                 if (nextPage == mSlideShowAdapter.getCount()) {
                     Animator animator = AnimationUtility.getCircularHide(mViewPager);
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mViewPager.setCurrentItem(0, false);
+                    if (animator != null) {
+                        animator.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mViewPager.setCurrentItem(0, false);
 
-                            AnimationUtility.getCircularReveal(mViewPager)
-                                    .start();
-                        }
-                    });
-                    animator.start();
+                                Animator animator = AnimationUtility.getCircularReveal(mViewPager);
+                                if (animator != null) {
+                                    animator.start();
+                                }
+                            }
+                        });
+                        animator.start();
+                    }
                 } else {
                     mViewPager.setCurrentItem(nextPage, true);
                 }

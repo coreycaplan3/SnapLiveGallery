@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme.SlideShowActivity"
-    app:theme="@style/AppTheme.SlideShowActivity"
+    android:theme="@style/AppTheme.DarkStatusBar"
+    app:theme="@style/AppTheme.DarkStatusBar"
     tools:context=".activities.SlideShowActivity">
 
     <include layout="@layout/app_bar" />
 
-    <caplaninnovations.com.livesnapgallery.views.NoTouchViewPager
+    <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize"
-        android:background="@color/cardview_dark_background" />
+        android:background="@android:color/background_dark" />
 
 </android.support.design.widget.CoordinatorLayout>

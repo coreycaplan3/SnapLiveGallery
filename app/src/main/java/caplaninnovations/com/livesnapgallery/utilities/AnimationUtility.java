@@ -7,6 +7,7 @@ import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.util.Property;
 import android.view.View;
@@ -63,46 +64,56 @@ public final class AnimationUtility {
         return linearOutSlowIn;
     }
 
+    @Nullable
     public static Animator getCircularReveal(final View view) {
         int cx = view.getWidth() / 2;
         int cy = view.getHeight() / 2;
 
         float finalRadius = (float) Math.hypot(cx, cy);
 
-        Animator animator = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0, finalRadius);
+        if(view.isAttachedToWindow()) {
+            Animator animator = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0, finalRadius);
 
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                view.setVisibility(View.VISIBLE);
-            }
-        });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    view.setVisibility(View.VISIBLE);
+                }
+            });
 
-        animator.setDuration(ANIMATION_DURATION_SHORT);
+            animator.setDuration(ANIMATION_DURATION_SHORT);
 
-        return animator;
+            return animator;
+        } else {
+            return null;
+        }
     }
 
+    @Nullable
     public static Animator getCircularHide(final View view) {
         int cx = view.getWidth() / 2;
         int cy = view.getHeight() / 2;
 
         float initialRadius = (float) Math.hypot(cx, cy);
 
-        Animator animator = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, 0);
+        if(view.isAttachedToWindow()) {
+            Animator animator = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, 0);
 
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                view.setVisibility(View.INVISIBLE);
-            }
-        });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    view.setVisibility(View.INVISIBLE);
+                }
+            });
 
-        animator.setDuration(ANIMATION_DURATION_SHORT);
+            animator.setDuration(ANIMATION_DURATION_SHORT);
 
-        return animator;
+            return animator;
+        } else {
+            return null;
+        }
     }
 
 }

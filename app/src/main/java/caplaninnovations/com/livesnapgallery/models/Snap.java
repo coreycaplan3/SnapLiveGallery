@@ -18,10 +18,12 @@ import io.realm.annotations.PrimaryKey;
 public class Snap extends RealmObject {
 
     public static final String COL_URL = "url";
+    public static final String COL_DATE = "dateAdded";
 
     @PrimaryKey
     private String url;
     private long dateAdded;
+    private String from;
 
     @SuppressWarnings("WeakerAccess")
     protected Snap(Parcel in) {
@@ -64,16 +66,23 @@ public class Snap extends RealmObject {
         return url;
     }
 
-    public void setUrl(String mUrl) {
-        this.url = mUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public long getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(long mDateAdded) {
-        this.dateAdded = mDateAdded;
+    public void setDateAdded(long dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 }
