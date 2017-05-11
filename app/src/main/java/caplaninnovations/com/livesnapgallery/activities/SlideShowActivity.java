@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import caplaninnovations.com.livesnapgallery.R;
+import caplaninnovations.com.livesnapgallery.database.RealmWrapper;
 import caplaninnovations.com.livesnapgallery.fragments.SlideShowFragment;
 import caplaninnovations.com.livesnapgallery.models.Snap;
 import caplaninnovations.com.livesnapgallery.utilities.AnimationUtility;
@@ -59,21 +60,18 @@ public class SlideShowActivity extends BaseActivity {
             mSnapKeys = getIntent().getStringArrayListExtra(KEY_SNAPS);
         }
 
-        RealmResults<Snap> mSnaps;
+        RealmResults<Snap> snaps;
         if (mSnapKeys == null) {
-            mSnaps = getRealm().where(Snap.class)
-                    .findAll();
+            snaps = RealmWrapper.getSnaps(getRealm());
         } else {
-            mSnaps = getRealm().where(Snap.class)
-                    .in(Snap.COL_URL, (String[]) mSnapKeys.toArray())
-                    .findAll();
+            snaps = RealmWrapper.getSnaps(getRealm(), (String[]) mSnapKeys.toArray());
         }
 
         disableScrollFlags();
 
         mSlideShowHandler = new Handler();
 
-        mSlideShowAdapter = new SlideShowAdapter(getSupportFragmentManager(), mSnaps);
+        mSlideShowAdapter = new SlideShowAdapter(getSupportFragmentManager(), snaps);
         mViewPager.setAdapter(mSlideShowAdapter);
 
         scheduleSlideShow();

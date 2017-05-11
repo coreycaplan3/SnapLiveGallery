@@ -21,11 +21,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import caplaninnovations.com.livesnapgallery.R;
+import caplaninnovations.com.livesnapgallery.database.RealmWrapper;
 import caplaninnovations.com.livesnapgallery.models.Snap;
 import caplaninnovations.com.livesnapgallery.networking.FeedNetwork;
 import caplaninnovations.com.livesnapgallery.recyclers.PictureRecyclerAdapter;
@@ -54,15 +54,20 @@ public class MainActivity extends BaseActivity implements OnSnapClickListener, S
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSwipeRefreshLayout.setOnRefreshListener(/* This class implements the interface */ this);
+        mSwipeRefreshLayout.setOnRefreshListener(/* MainActivity implements it */ this);
 
-        RealmResults<Snap> snaps = getRealm()
-                .where(Snap.class)
-                .findAll()
-                .sort(Snap.COL_DATE);
+        RealmResults<Snap> snaps = RealmWrapper.getSnaps(getRealm());
+        if(snaps.size() == 0) {
+            getRealm().executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.insertOrUpdate(Snap.getDummyList());
+                }
+            });
+        }
 
-        RecyclerView.Adapter adapter = new PictureRecyclerAdapter(snaps,
-                /* This class implements the interface */ this);
+        RecyclerView.Adapter adapter =
+                new PictureRecyclerAdapter(snaps, /* MainActivity implements it */ this);
         mRecyclerView.setAdapter(adapter);
 
         int span;
@@ -120,17 +125,21 @@ public class MainActivity extends BaseActivity implements OnSnapClickListener, S
                             try {
                                 JsonExtractor extractor = new JsonExtractor(response.getJSONObject(i));
 
-
                                 String url = extractor.getString("url");
-
                                 if (url != null && !url.contains(".mp4")) {
                                     Snap snap = new Snap();
                                     snap.setUrl(url);
                                     snap.setDateAdded(extractor.getLong("date"));
                                     snap.setFrom(extractor.getString("from"));
+
+                                    Snap old = RealmWrapper.getSnap(realm, url);
+                                    if (old != null) {
+                                        snap.setDeleted(old.isDeleted());
+                                    }
+
                                     realm.insertOrUpdate(snap);
                                 }
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -183,10 +192,9 @@ public class MainActivity extends BaseActivity implements OnSnapClickListener, S
                         getRealm().executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                realm.where(Snap.class)
-                                        .equalTo(Snap.COL_URL, url)
-                                        .findFirst()
-                                        .deleteFromRealm();
+                                Snap snapToDelete = RealmWrapper.getSnap(realm, url);
+                                snapToDelete.setDeleted(true);
+                                realm.insertOrUpdate(snapToDelete);
                             }
                         });
                     }

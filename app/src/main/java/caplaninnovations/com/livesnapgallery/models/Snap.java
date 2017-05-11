@@ -19,37 +19,34 @@ public class Snap extends RealmObject {
 
     public static final String COL_URL = "url";
     public static final String COL_DATE = "dateAdded";
+    public static final String COL_IS_DELETED = "isDeleted";
 
     @PrimaryKey
     private String url;
     private long dateAdded;
     private String from;
-
-    @SuppressWarnings("WeakerAccess")
-    protected Snap(Parcel in) {
-        url = in.readString();
-        dateAdded = in.readLong();
-    }
+    private boolean isDeleted;
 
     public static ArrayList<Snap> getDummyList() {
         String url;
         ArrayList<Snap> snaps = new ArrayList<>();
         long time = Calendar.getInstance().getTimeInMillis();
+        String from = "Corey Caplan";
 
         url = "https://images.pexels.com/photos/59523/pexels-photo-59523.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb";
-        snaps.add(new Snap(url, time));
+        snaps.add(new Snap(url, time, from));
 
         url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnfpzoD-_HTIGH37ncMqaYiqjOI4MrXSPSTCyAHbJdSsc6O9vP";
-        snaps.add(new Snap(url, time));
+        snaps.add(new Snap(url, time, from));
 
         url = "https://images.pexels.com/photos/39317/chihuahua-dog-puppy-cute-39317.jpeg?w=940&h=650&auto=compress&cs=tinysrgb";
-        snaps.add(new Snap(url, time));
+        snaps.add(new Snap(url, time, from));
 
         url = "https://images.pexels.com/photos/97863/pexels-photo-97863.jpeg?w=940&h=650&auto=compress&cs=tinysrgb";
-        snaps.add(new Snap(url, time));
+        snaps.add(new Snap(url, time, from));
 
         url = "https://images.pexels.com/photos/71581/animal-pet-dog-puppy-71581.jpeg?w=940&h=650&auto=compress&cs=tinysrgb";
-        snaps.add(new Snap(url, time));
+        snaps.add(new Snap(url, time, from));
 
         return snaps;
     }
@@ -57,9 +54,11 @@ public class Snap extends RealmObject {
     public Snap() {
     }
 
-    private Snap(String url, long dateAdded) {
+    private Snap(String url, long dateAdded, String from) {
         this.url = url;
         this.dateAdded = dateAdded;
+        this.from = from;
+        this.isDeleted = false;
     }
 
     public String getUrl() {
@@ -84,5 +83,13 @@ public class Snap extends RealmObject {
 
     public void setFrom(String from) {
         this.from = from;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

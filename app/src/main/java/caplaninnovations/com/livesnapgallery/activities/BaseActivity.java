@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import caplaninnovations.com.livesnapgallery.R;
+import caplaninnovations.com.livesnapgallery.database.RealmWrapper;
 import caplaninnovations.com.livesnapgallery.models.Snap;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -75,10 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             setContentView(layoutResourceId);
         }
 
-        RealmConfiguration configuration = new RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        mRealm = Realm.getInstance(configuration);
+        mRealm = RealmWrapper.getInstance();
 
         if(isFirstInstance) {
             mRealm.executeTransaction(new Realm.Transaction() {

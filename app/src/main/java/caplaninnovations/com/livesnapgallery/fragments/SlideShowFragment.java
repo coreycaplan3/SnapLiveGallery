@@ -14,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import caplaninnovations.com.livesnapgallery.R;
+import caplaninnovations.com.livesnapgallery.database.RealmWrapper;
 import caplaninnovations.com.livesnapgallery.models.Snap;
 import caplaninnovations.com.livesnapgallery.utilities.DateUtility;
 import io.realm.Realm;
@@ -72,13 +73,7 @@ public class SlideShowFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_slide_show, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        RealmConfiguration configuration = new RealmConfiguration.Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm realm = Realm.getInstance(configuration);
-        Snap snap = realm.where(Snap.class)
-                .equalTo("url", mSnapKey)
-                .findFirst();
+        Snap snap = RealmWrapper.getSnap(RealmWrapper.getInstance(), mSnapKey);
 
         Glide.with(this)
                 .load(snap.getUrl())

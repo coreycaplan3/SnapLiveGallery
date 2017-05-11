@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import caplaninnovations.com.livesnapgallery.R;
+import caplaninnovations.com.livesnapgallery.database.RealmWrapper;
 import caplaninnovations.com.livesnapgallery.models.Snap;
 import caplaninnovations.com.livesnapgallery.utilities.DateUtility;
 
@@ -55,10 +56,7 @@ public class PhotoDetailsActivity extends BaseActivity {
             mSnap = getIntent().getStringExtra(KEY_SNAP);
         }
 
-        Snap snap = getRealm()
-                .where(Snap.class)
-                .equalTo(Snap.COL_URL, mSnap)
-                .findFirst();
+        Snap snap = RealmWrapper.getSnap(getRealm(), mSnap);
 
         Drawable errorDrawable = getResources().getDrawable(R.drawable.ic_cloud_off_black_48dp, null);
         errorDrawable.setTint(Color.WHITE);
